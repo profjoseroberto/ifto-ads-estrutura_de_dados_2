@@ -45,5 +45,9 @@ public class Node<E>{
         this.children = children;
     }
 
+    @Override
+    public String toString() {
+        return "Node [element=" + element + "]";
+    }
     
 }
