@@ -85,7 +85,6 @@ public class Tree<E> {
     private void preorder(Node<E> v){
         //operação a ser realizada com o nodo
         System.out.println(v);
-        System.out.print("_");
         //percorre cada filho de um nodo
 	    for(Node<E> w : v.getChildren()){
             //chamando recursivamente o método preorder passando o filho como argumento
