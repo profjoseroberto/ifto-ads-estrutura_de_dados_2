@@ -3,8 +3,11 @@ package edu.edii.treegeneric;
 import java.util.ArrayList;
 
 public class Node<E>{
+    //Informação guardada na estrutura
     private E element;
+    //Node pai
     private Node<E> parent;
+    //Filhos
     private ArrayList<Node<E>> children;
 
     //construtor no primeiro caso - O nó é raiz
