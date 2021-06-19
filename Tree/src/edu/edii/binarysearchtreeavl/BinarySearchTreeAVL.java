@@ -4,7 +4,7 @@ import edu.edii.binarysearchtree.*;
 
 public class BinarySearchTreeAVL<E> extends BinarySearchTree<E> {
     /* ALTURA DA ÁRVORE */
-    private int height(Node<E> t) {
+    protected int height(Node<E> t) {
         if (t == null) {
             return -1;
         } else {
@@ -13,7 +13,7 @@ public class BinarySearchTreeAVL<E> extends BinarySearchTree<E> {
     }
 
     /* FATOR DE BALANCEAMENTO */
-    private int getFB(Node<E> t) {
+    protected int getFB(Node<E> t) {
         return height(t.getRight()) - height(t.getLeft());
     }
 
@@ -22,7 +22,7 @@ public class BinarySearchTreeAVL<E> extends BinarySearchTree<E> {
      * filho a direita do nó desbalanceado. (2) O nó desbalanceado passa a ser filho
      * a esquerda do seu antigo filho a direita.
      */
-    private Node<E> rotateLeft(Node<E> noDesb) {
+    protected Node<E> rotateLeft(Node<E> noDesb) {
         Node<E> filhoD = noDesb.getRight();
         noDesb.setRight(filhoD.getLeft());
         if (filhoD.getLeft() != null)
@@ -39,7 +39,7 @@ public class BinarySearchTreeAVL<E> extends BinarySearchTree<E> {
      * filho a esquerda do nó desbalanceado. (2) O nó desbalanceado passa a ser
      * filho a direita do seu antigo filho a esquerda.
      */
-    private Node<E> rotateRight(Node<E> noDesb) {
+    protected Node<E> rotateRight(Node<E> noDesb) {
         Node<E> filhoE = noDesb.getLeft();
         noDesb.setLeft(filhoE.getRight());
         if (filhoE.getRight() != null)
@@ -50,7 +50,7 @@ public class BinarySearchTreeAVL<E> extends BinarySearchTree<E> {
         return filhoE;
     }
 
-    private Node<E> balance(Node<E> t) {
+    protected Node<E> balance(Node<E> t) {
         Node<E> aux = t;
         if (t != null) {
             /* Desbalanceada a direita */
