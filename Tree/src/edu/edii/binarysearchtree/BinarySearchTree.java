@@ -1,10 +1,8 @@
 package edu.edii.binarysearchtree;
 
-import javax.lang.model.util.ElementScanner6;
-
 public class BinarySearchTree<E> {
     // raiz da árvore
-    private Node<E> root;
+    protected Node<E> root;
 
     public BinarySearchTree() {
         this.root = null;
@@ -58,7 +56,7 @@ public class BinarySearchTree<E> {
 
     // addRoot(e): cria e retorna um nó novo, que armazena o elemento e torna-o raiz
     // da árvore; um erro ocorre se a árvore não estiver vazia.
-    private Node<E> addRoot(int k, E element) throws NonEmptyTreeException {
+    protected Node<E> addRoot(int k, E element) throws NonEmptyTreeException {
         if (!isEmpty())
             throw new NonEmptyTreeException("A árvore já possui raiz!");
         this.root = new Node<E>(k, element);
@@ -84,7 +82,7 @@ public class BinarySearchTree<E> {
     // insertLeft(n, v): cria e retorna um nodo novo que armazena o valor v,
     // acrescenta o novo nodo como filho a esquerda de n. um condição de erro ocorre
     // caso n já tenha filho a esquerda (InvalidNodeException)
-    private Node<E> insertLeftNode(Node<E> n, int k, E v) throws InvalidNodeException {
+    protected Node<E> insertLeftNode(Node<E> n, int k, E v) throws InvalidNodeException {
         if (hasLeft(n))
             throw new InvalidNodeException("Já existe nó a esquerda!");
         Node<E> novo = new Node<>(k, v);
@@ -96,7 +94,7 @@ public class BinarySearchTree<E> {
     // insertRight(n, v): cria e retorna um nodo novo que armazena o valor v,
     // acrescenta o novo nodo como filho a direita de n. um condição de erro ocorre
     // caso n já tenha filho a direita
-    private Node<E> insertRightNode(Node<E> n, int k, E v) throws InvalidNodeException {
+    protected Node<E> insertRightNode(Node<E> n, int k, E v) throws InvalidNodeException {
         if (hasRight(n))
             throw new InvalidNodeException("Já existe nó a direita!");
         Node<E> novo = new Node<>(k, v);
@@ -112,9 +110,9 @@ public class BinarySearchTree<E> {
         preorder(this.root);
     }
 
-    private void preorder(Node<E> v) {
+    protected void preorder(Node<E> v) {
         // operação a ser realizada com o nodo
-        System.out.println(v);
+        System.out.println(v + " Pai:" + v.getParent() + " Esquerda:" + v.getLeft() + " Direita:" + v.getRight());
         // percorre cada filho de um nodo
         if (hasLeft(v))
             preorder(v.getLeft());
@@ -127,14 +125,14 @@ public class BinarySearchTree<E> {
         posorder(this.root);
     }
 
-    private void posorder(Node<E> v) {
+    protected void posorder(Node<E> v) {
         // percorre cada filho de um nodo
         if (hasLeft(v))
             posorder(v.getLeft());
         if (hasRight(v))
             posorder(v.getRight());
         // operação a ser realizada com o nodo
-        System.out.println(v);
+        System.out.println(v + " Pai:" + v.getParent() + " Esquerda:" + v.getLeft() + " Direita:" + v.getRight());
 
     }
 
@@ -143,12 +141,12 @@ public class BinarySearchTree<E> {
         inorder(this.root);
     }
 
-    private void inorder(Node<E> v) {
+    protected void inorder(Node<E> v) {
         // percorre a subarvore esquerda
         if (hasLeft(v))
             inorder(v.getLeft());
         // operação a ser realizada com o nodo
-        System.out.println(v + "-" + v.getParent());
+        System.out.println(v + " Pai:" + v.getParent() + " Esquerda:" + v.getLeft() + " Direita:" + v.getRight());
         // percorre a subarvore direita
         if (hasRight(v))
             inorder(v.getRight());
@@ -190,7 +188,7 @@ public class BinarySearchTree<E> {
         this.root = put(this.root, null, key, v);
     }
 
-    private Node<E> put(Node<E> n, Node<E> a, int k, E v) {
+    protected Node<E> put(Node<E> n, Node<E> a, int k, E v) {
         /* Encontramos uma posição em que o novo nó possa ser inserido */
         if (n == null) {
             Node<E> t = new Node<>(k, v);
@@ -220,7 +218,7 @@ public class BinarySearchTree<E> {
         return get(this.root, k);
     }
 
-    private Node<E> get(Node<E> n, int key){
+    protected Node<E> get(Node<E> n, int key){
         //Ponto de parada da busca, pois o elemento não foi encontrado
         if(n == null) return null;
         //Elemento foi encontrado foi encontrado e retornado
@@ -241,7 +239,7 @@ public class BinarySearchTree<E> {
         this.root = remove(this.root, key);
     }
 
-    private Node<E> remove(Node<E> n, int k) {
+    protected Node<E> remove(Node<E> n, int k) {
         /* BUSCANDO VALOR */
         if (n != null) {
             if (k < n.getKey()) {
@@ -272,7 +270,7 @@ public class BinarySearchTree<E> {
         return n;
     }
 
-    private Node<E> menorDir(Node<E> aRemover, Node<E> menor) {
+    protected Node<E> menorDir(Node<E> aRemover, Node<E> menor) {
         /*
          * Saberemos que encontramos o elemento de menor chave, quando o próximo nó a
          * esquerda for nulo
