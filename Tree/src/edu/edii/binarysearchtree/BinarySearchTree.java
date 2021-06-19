@@ -1,5 +1,6 @@
 package edu.edii.binarysearchtree;
 
+import javax.lang.model.util.ElementScanner6;
 
 public class BinarySearchTree<E> {
     // raiz da árvore
@@ -147,41 +148,163 @@ public class BinarySearchTree<E> {
         if (hasLeft(v))
             inorder(v.getLeft());
         // operação a ser realizada com o nodo
-        System.out.println(v);
+        System.out.println(v + "-" + v.getParent());
         // percorre a subarvore direita
         if (hasRight(v))
             inorder(v.getRight());
     }
 
     // adicionar
-    public void put(int k, E v){
-       if(isEmpty()) addRoot(k, v);
-       else{
-           Node<E> temp = this.root;
-           boolean inseriu = false;
-           while(inseriu == false){
-                //procurar a posição de inserção a esquerda
-                if(k < temp.getKey()){
-                    //verificando se a posição de inserção foi encontrada
-                    if(!hasLeft(temp)){
+    public void putNoRecursivo(int k, E v) {
+        if (isEmpty())
+            addRoot(k, v);
+        else {
+            Node<E> temp = this.root;
+            boolean inseriu = false;
+            while (inseriu == false) {
+                // procurar a posição de inserção a esquerda
+                if (k < temp.getKey()) {
+                    // verificando se a posição de inserção foi encontrada
+                    if (!hasLeft(temp)) {
                         insertLeftNode(temp, k, v);
                         inseriu = true;
-                    }else{
-                        temp = temp.getLeft();  
+                    } else {
+                        temp = temp.getLeft();
                     }
-               //procurar a posição de inserção a direita
-               }else{
-                   if(!hasRight(temp)){
-                       insertRightNode(temp, k, v);
-                       inseriu = true;
-                   }else{
-                    temp = temp.getRight();
-                   }
-               }
-           }
-       }
+                    // procurar a posição de inserção a direita
+                } else {
+                    if (!hasRight(temp)) {
+                        insertRightNode(temp, k, v);
+                        inseriu = true;
+                    } else {
+                        temp = temp.getRight();
+                    }
+                }
+            }
+        }
     }
-    // pesquisar
-    // remove
 
+    /* Adicionar recursivo */
+    public void put(int key, E v) {
+        //Chamando o método para adicionar o novo nó e atualizar a árvore com a nova configuração
+        this.root = put(this.root, null, key, v);
+    }
+
+    private Node<E> put(Node<E> n, Node<E> a, int k, E v) {
+        /* Encontramos uma posição em que o novo nó possa ser inserido */
+        if (n == null) {
+            Node<E> t = new Node<>(k, v);
+            t.setParent(a);
+            return t;
+        } else {
+            // Verificamos se o valor é menor com o nó atual verificado
+            if (k < n.getKey()) {
+                // Chamamos de forma recursiva o método put passando o próximo nó a esquerda. As alterações devem refletir na subárvore a esquerda do nó atual
+                n.setLeft(put(n.getLeft(), n, k, v));
+            // Verificamos se o valor é menor com o nó atual verificado
+            } else {
+                // Chamamos de forma recursiva o método put passando o próximo nó a direita. As alterações devem refletir na subárvore a direita do nó atual
+                n.setRight(put(n.getRight(), n, k, v));
+            }
+        }
+        return n;
+    }
+
+    /**
+     * ************* FIM DOS MÉTODOS DE ADICIONAR
+     */
+
+    // pesquisar
+    public Node<E> get(int k){
+        //retornar o valor encontrado
+        return get(this.root, k);
+    }
+
+    private Node<E> get(Node<E> n, int key){
+        //Ponto de parada da busca, pois o elemento não foi encontrado
+        if(n == null) return null;
+        //Elemento foi encontrado foi encontrado e retornado
+        else if(key == n.getKey()) return n;
+        else{
+        // if(n != null && key != n.getKey()){
+            // executa o método get de forma recursiva passando o filho a esquerda do nó atualh, pois a chave passada é menor do que o nó atual
+            if(key < n.getKey()) return get(n.getLeft(), key);
+            // executa o método get de forma recursiva passando o filho a direita do nó atual, pois a chave passada é marior do que o nó atual
+            else if(key > n.getKey()) return get(n.getRight(), key);
+        }
+        return n;
+    }
+
+    /* MÉTODO DE REMOVER */
+    public void remove(int key) {
+        //inicializa o método de remover pela raiz, que receberá as atualizações da árvore
+        this.root = remove(this.root, key);
+    }
+
+    private Node<E> remove(Node<E> n, int k) {
+        /* BUSCANDO VALOR */
+        if (n != null) {
+            if (k < n.getKey()) {
+                n.setLeft(remove(n.getLeft(), k));
+            } else if (k > n.getKey()) {
+                n.setRight(remove(n.getRight(), k));
+            }
+            /* ENCONTROU */
+           //O nó a ser removido é folha. Então o seu pai vai receber uma atualização null para sua subárvore esquerda ou direita
+            else if(isExternal(n)) return null;
+            /* Não existe valor a esquerda */ /* compiamos a subarvore a direita para o lugar do pai */
+            else if (n.getLeft() == null) {
+                if(!isRoot(n)) n.getRight().setParent(n.getParent());
+                n = n.getRight();
+            }
+            /* Não existe valor a direita */ /* compiamos a subarvore a esquerda para o lugar do pai */
+            else if (n.getRight() == null) {
+                if(!isRoot(n)) n.getLeft().setParent(n.getParent());
+                n = n.getLeft();
+            } /*
+               * Buscamos a direita, o menor valor, que irá ocupar o lugar do nó a ser
+               * removido
+               */
+            else {
+                n.setRight(menorDir(n, n.getRight()));
+            }
+        }
+        return n;
+    }
+
+    private Node<E> menorDir(Node<E> aRemover, Node<E> menor) {
+        /*
+         * Saberemos que encontramos o elemento de menor chave, quando o próximo nó a
+         * esquerda for nulo
+         */
+        if (menor.getLeft() == null) {
+            /*
+             * O valor do elemento de menor valor da subárvore a direita é copiado para o nó
+             * a ser removido
+             */
+            aRemover.setElement(menor.getElement());
+            aRemover.setKey(menor.getKey());
+            if(hasRight(menor)) menor.getRight().setParent(menor.getParent());
+            /*
+             * retornamos a subárvore direita do menor valor para que ela possa ocupar o
+             * lugar do nó de menor valor
+             */
+            return menor.getRight();
+            /*
+             * Se o valor de menor valor não foi encontrado, contiamos a buscar a esquerda
+             * da subárvore a direita
+             */
+        } else {
+            /*
+             * Se o valor for encontrado no próximo passo, a subárvore a direita do menor
+             * valor ocupará o seu lugar
+             */
+            menor.setLeft(menorDir(aRemover, menor.getLeft()));
+        }
+
+        return menor;
+    }
+    /**
+     * ************** FIM DO MÉTODO DE REMOVER
+     */
 }
